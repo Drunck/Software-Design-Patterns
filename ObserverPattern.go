@@ -32,7 +32,8 @@ type JobSite struct {
 	vacancies   []string
 }
 
-/*func (j *JobSite) subscribe(ob Observer) error {
+/*
+func (j *JobSite) subscribe(ob Observer) error {
 	for _, observer := range j.subscribers {
 		if ob == observer {
 			return fmt.Errorf("observer already exists")
@@ -50,7 +51,8 @@ func (j *JobSite) unsubscribe(ob Observer) error {
 		}
 	}
 	return fmt.Errorf("observer not found")
-}*/
+}
+*/
 
 func (j *JobSite) subscribe(ob Observer) error {
 	for _, observer := range j.subscribers {
@@ -64,13 +66,15 @@ func (j *JobSite) subscribe(ob Observer) error {
 	return nil
 }
 
-func (j *JobSite) unsubscribe(ob Observer) {
+func (j *JobSite) unsubscribe(ob Observer) error {
 	for i, observer := range j.subscribers {
 		if ob == observer {
 			j.subscribers = append(j.subscribers[:i], j.subscribers[i+1:]...)
+			return nil
 		}
 	}
 	fmt.Printf("Observer %v not found!\n", ob)
+	return nil
 }
 
 func (j *JobSite) notifyAll() {
@@ -86,7 +90,7 @@ func (j *JobSite) addVacancies(vacancy string) error {
 }
 
 func (j *JobSite) removeVacancies(vacancy string) error {
-	len := len(j.vacancies)
+	length := len(j.vacancies)
 	counter := 0
 	for i, v := range j.vacancies {
 		if v == vacancy {
@@ -96,8 +100,8 @@ func (j *JobSite) removeVacancies(vacancy string) error {
 		}
 		counter++
 	}
-	if counter == len {
-		fmt.Printf("Vacancy %v not found!\n", vacancy)
+	if counter == length {
+		fmt.Printf("Vacancy '%v' not found!\n", vacancy)
 	}
 	return nil
 }
@@ -118,6 +122,9 @@ func main() {
 	jobSite.notifyAll()
 	fmt.Println("===================================")
 	jobSite.addVacancies("Back-End Developer")
+
+	fmt.Println("===================================")
+	jobSite.unsubscribe(personB)
 	jobSite.unsubscribe(personB)
 
 	fmt.Println("===================================")
